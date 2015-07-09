@@ -15,12 +15,41 @@ import scarab.modular.DataValue;
 
 public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 
+	public static final String DELIMITER_COMMA = ",";
+	public static final String DELIMITER_SEMICOLON = ";";
+	public static final String DELIMITER_TABULATOR = "\t";
+
 	private boolean headerIncluded = false;
+	private String delimiter = DELIMITER_COMMA;
+	private boolean quotedValues = true;
+
 	private DataLine headerLine;
 
-	public CsvFileInputProcessor(File inputFile, boolean headerIncluded) {
+	/**
+	 * Full constructor with all possible parameters.
+	 * 
+	 * @param inputFile
+	 *            input file to process
+	 * @param headerIncluded
+	 *            is there a header line included?
+	 * @param delimiter
+	 *            the delimiter used in the input file
+	 * @param quotedValues
+	 *            are double quotes used for values? then they are removed
+	 */
+	public CsvFileInputProcessor(File inputFile, boolean headerIncluded, String delimiter, boolean quotedValues) {
 		super(inputFile);
 		this.headerIncluded = headerIncluded;
+		this.delimiter = delimiter;
+		this.quotedValues = quotedValues;
+	}
+
+	public CsvFileInputProcessor(File inputFile, boolean headerIncluded, String delimiter) {
+		this(inputFile, headerIncluded, DELIMITER_COMMA, true);
+	}
+
+	public CsvFileInputProcessor(File inputFile, boolean headerIncluded) {
+		this(inputFile, headerIncluded, DELIMITER_COMMA);
 	}
 
 	@Override
@@ -49,7 +78,7 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 	private DataLine processLine(String line) {
 		DataLine dataLine = new DataLine();
 
-		StringTokenizer tokenizer = new StringTokenizer(line, ",");
+		StringTokenizer tokenizer = new StringTokenizer(line, delimiter);
 		Iterator<DataValue> headerValues;
 		if (headerIncluded && null != headerLine) {
 			headerValues = headerLine.getValues().iterator();
@@ -59,7 +88,11 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 		while (tokenizer.hasMoreTokens()) {
 			DataValue value = new DataValue();
 			value.setName(headerValues.next().getValue());
-			value.setValue(tokenizer.nextToken());
+			String token = tokenizer.nextToken();
+			if (quotedValues && token.startsWith("\"") && token.endsWith("\"") && token.length() >= 2) {
+				token = token.substring(1, token.length() - 1);
+			}
+			value.setValue(token);
 			value.setType(DataType.STRING);
 			dataLine.add(value);
 		}
@@ -67,6 +100,15 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 		return dataLine;
 	}
 
+	/**
+	 * If no header is included in the input file a header is generated, because
+	 * every {@link DataValue} object needs an name. The size of the generated
+	 * header is configurable.
+	 * 
+	 * @param countTokens
+	 *            how many header entries should be created.
+	 * @return an iterator for the generated header
+	 */
 	private Iterator<DataValue> getArificialHeader(int countTokens) {
 		ArrayList<DataValue> header = new ArrayList<DataValue>();
 		for (int i = 0; i < countTokens; i++) {
