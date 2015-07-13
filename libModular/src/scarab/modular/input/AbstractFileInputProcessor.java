@@ -9,19 +9,39 @@ import scarab.modular.DataLine;
 import scarab.modular.ModularException;
 import scarab.modular.mapping.MappingProcessor;
 
+/**
+ * 
+ * @author Scarab
+ *
+ */
 public abstract class AbstractFileInputProcessor implements InputProcessor {
 
 	private File inputFile;
 
+	/**
+	 * 
+	 * @param inputFile
+	 */
 	public AbstractFileInputProcessor(File inputFile) {
 		this.inputFile = inputFile;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see scarab.modular.input.InputProcessor#process()
+	 */
 	@Override
 	public List<DataLine> process() throws ModularException {
 		return process(null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see scarab.modular.input.InputProcessor#process(scarab.modular.mapping.
+	 * MappingProcessor)
+	 */
 	@Override
 	public List<DataLine> process(MappingProcessor mappingProcessor) throws ModularException {
 		List<DataLine> result = new ArrayList<DataLine>();
@@ -43,6 +63,13 @@ public abstract class AbstractFileInputProcessor implements InputProcessor {
 		return result;
 	}
 
-	protected abstract List<DataLine> processFile(File inputFile) throws IOException;
+	/**
+	 * 
+	 * @param inputFile
+	 * @return
+	 * @throws IOException
+	 * @throws InputException
+	 */
+	protected abstract List<DataLine> processFile(File inputFile) throws IOException, InputException;
 
 }

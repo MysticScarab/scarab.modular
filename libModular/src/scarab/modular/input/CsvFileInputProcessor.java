@@ -13,6 +13,11 @@ import scarab.modular.DataLine;
 import scarab.modular.DataType;
 import scarab.modular.DataValue;
 
+/**
+ * 
+ * @author Scarab
+ *
+ */
 public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 
 	public static final String DELIMITER_COMMA = ",";
@@ -22,6 +27,7 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 	private boolean headerIncluded = false;
 	private String delimiter = DELIMITER_COMMA;
 	private boolean quotedValues = true;
+	private boolean ignoreEmptyLines = false;
 
 	private DataLine headerLine;
 
@@ -44,29 +50,119 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 		this.quotedValues = quotedValues;
 	}
 
+	/**
+	 * 
+	 * @param inputFile
+	 * @param headerIncluded
+	 * @param delimiter
+	 */
 	public CsvFileInputProcessor(File inputFile, boolean headerIncluded, String delimiter) {
 		this(inputFile, headerIncluded, DELIMITER_COMMA, true);
 	}
 
+	/**
+	 * 
+	 * @param inputFile
+	 * @param headerIncluded
+	 */
 	public CsvFileInputProcessor(File inputFile, boolean headerIncluded) {
 		this(inputFile, headerIncluded, DELIMITER_COMMA);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isHeaderIncluded() {
+		return headerIncluded;
+	}
+
+	/**
+	 * 
+	 * @param headerIncluded
+	 */
+	public void setHeaderIncluded(boolean headerIncluded) {
+		this.headerIncluded = headerIncluded;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getDelimiter() {
+		return delimiter;
+	}
+
+	/**
+	 * 
+	 * @param delimiter
+	 */
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isQuotedValues() {
+		return quotedValues;
+	}
+
+	/**
+	 * 
+	 * @param quotedValues
+	 */
+	public void setQuotedValues(boolean quotedValues) {
+		this.quotedValues = quotedValues;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isIgnoreEmptyLines() {
+		return ignoreEmptyLines;
+	}
+
+	/**
+	 * 
+	 * @param ignoreEmptyLines
+	 */
+	public void setIgnoreEmptyLines(boolean ignoreEmptyLines) {
+		this.ignoreEmptyLines = ignoreEmptyLines;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * scarab.modular.input.AbstractFileInputProcessor#processFile(java.io.File)
+	 */
 	@Override
-	protected List<DataLine> processFile(File inputFile) throws IOException {
+	protected List<DataLine> processFile(File inputFile) throws IOException, InputException {
 		List<DataLine> dataLines = new ArrayList<DataLine>();
 
 		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 		String line;
-		if (headerIncluded) {
-			line = reader.readLine();
-			headerLine = processLine(line);
-		}
 
-		// content verarbeiten
+		// process data
 		while (null != (line = reader.readLine())) {
-			DataLine dataLine = processLine(line);
-			dataLines.add(dataLine);
+			if (!line.isEmpty()) {
+				DataLine dataLine = processLine(line);
+				// header included and not set?
+				if (headerIncluded && null == headerLine) {
+					headerLine = dataLine;
+				} else { // add to payload
+					dataLines.add(dataLine);
+				}
+			} else {
+				// empty lines forbidden? -> Exception
+				if (!ignoreEmptyLines) {
+					reader.close();
+					throw new InputException("Empty lines are not allowed.");
+				}
+			}
 		}
 
 		reader.close();
@@ -75,6 +171,15 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 
 	}
 
+	/**
+	 * Process the given line. Separate the values by the configured delimiter.
+	 * At this pint it is not possible to tell the {@link DataType} so every
+	 * value is assign to the DataType.STRING.
+	 * 
+	 * @param line
+	 *            String to process
+	 * @return the processed line as {@link DataLine}
+	 */
 	private DataLine processLine(String line) {
 		DataLine dataLine = new DataLine();
 
