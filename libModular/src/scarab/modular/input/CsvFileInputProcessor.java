@@ -188,7 +188,7 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 		if (headerIncluded && null != headerLine) {
 			headerValues = headerLine.getValues().iterator();
 		} else {
-			headerValues = getArificialHeader(tokenizer.countTokens());
+			headerValues = getArtificialHeader(tokenizer.countTokens());
 		}
 		while (tokenizer.hasMoreTokens()) {
 			DataValue value = new DataValue();
@@ -207,14 +207,14 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 
 	/**
 	 * If no header is included in the input file a header is generated, because
-	 * every {@link DataValue} object needs an name. The size of the generated
+	 * every {@link DataValue} object needs a name. The size of the generated
 	 * header is configurable.
 	 * 
 	 * @param countTokens
 	 *            how many header entries should be created.
 	 * @return an iterator for the generated header
 	 */
-	private Iterator<DataValue> getArificialHeader(int countTokens) {
+	private Iterator<DataValue> getArtificialHeader(int countTokens) {
 		ArrayList<DataValue> header = new ArrayList<DataValue>();
 		for (int i = 0; i < countTokens; i++) {
 			DataValue value = new DataValue();
