@@ -14,7 +14,7 @@ public class SimpleFieldValueMappingProcessorTest {
 
     @Test
     public void testProcess() {
-        List<FieldValueMappingRule> mappingRules = new ArrayList<FieldValueMappingRule>();
+        List<FieldValueMappingRule> mappingRules = new ArrayList<>();
         FieldValueMappingRule mappingRule = new FieldValueMappingRule("field1", "value1", "mapping1");
         //TODO: add rule content
         mappingRules.add(mappingRule);
@@ -28,12 +28,8 @@ public class SimpleFieldValueMappingProcessorTest {
         value1.setValue("value1");
         originalData.add(value1);
 
-        try {
-            DataLine mappedData = processor.process(originalData);
-            //TODO: check result
-        } catch (MappingException exception) {
-            fail("unexpected exception");
-        }
+        DataLine mappedData = processor.process(originalData);
+        //TODO: check result
     }
 
 }
