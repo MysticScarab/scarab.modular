@@ -141,7 +141,7 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 	 */
 	@Override
 	protected List<DataLine> processFile(File inputFile) throws IOException, InputException {
-		List<DataLine> dataLines = new ArrayList<DataLine>();
+		List<DataLine> dataLines = new ArrayList<>();
 
 		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 		String line;
@@ -215,7 +215,7 @@ public class CsvFileInputProcessor extends AbstractFileInputProcessor {
 	 * @return an iterator for the generated header
 	 */
 	private Iterator<DataValue> getArtificialHeader(int countTokens) {
-		ArrayList<DataValue> header = new ArrayList<DataValue>();
+		ArrayList<DataValue> header = new ArrayList<>();
 		for (int i = 0; i < countTokens; i++) {
 			DataValue value = new DataValue();
 			value.setName("HEADER-" + i);

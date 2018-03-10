@@ -17,7 +17,7 @@ public class DataLine {
 
 	public void add(DataValue value) {
 		if (null == values) {
-			values = new ArrayList<DataValue>();
+			values = new ArrayList<>();
 		}
 		values.add(value);
 	}
@@ -29,7 +29,7 @@ public class DataLine {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (null != values && !values.isEmpty()) {
 			for (DataValue dataValue : values) {
 				buffer.append(dataValue);

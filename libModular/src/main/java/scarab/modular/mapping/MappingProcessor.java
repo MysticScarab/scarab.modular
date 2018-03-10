@@ -5,6 +5,6 @@ import scarab.modular.ModularException;
 
 public interface MappingProcessor {
 
-	public DataLine process(DataLine dataLine) throws ModularException;
+	DataLine process(DataLine dataLine) throws ModularException;
 
 }
