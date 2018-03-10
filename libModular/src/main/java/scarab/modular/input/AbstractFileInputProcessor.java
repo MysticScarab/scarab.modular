@@ -16,7 +16,7 @@ import scarab.modular.mapping.MappingProcessor;
  */
 public abstract class AbstractFileInputProcessor implements InputProcessor {
 
-	private File inputFile;
+	private final File inputFile;
 
 	/**
 	 * 
@@ -42,7 +42,7 @@ public abstract class AbstractFileInputProcessor implements InputProcessor {
 	 * MappingProcessor)
 	 */
 	public List<DataLine> process(MappingProcessor mappingProcessor) throws ModularException {
-		List<DataLine> result = new ArrayList<DataLine>();
+		List<DataLine> result = new ArrayList<>();
 		List<DataLine> inputLines;
 		try {
 			inputLines = processFile(inputFile);

@@ -8,7 +8,7 @@ import scarab.modular.mapping.MappingProcessor;
 
 public interface InputProcessor {
 
-	public List<DataLine> process() throws ModularException;
-	public List<DataLine> process(MappingProcessor mappingProcessor) throws ModularException;
+	List<DataLine> process() throws ModularException;
+	List<DataLine> process(MappingProcessor mappingProcessor) throws ModularException;
 
 }

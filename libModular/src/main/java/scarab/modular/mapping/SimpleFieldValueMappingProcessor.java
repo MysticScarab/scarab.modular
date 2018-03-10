@@ -10,24 +10,24 @@ import scarab.modular.DataValue;
 
 public class SimpleFieldValueMappingProcessor implements MappingProcessor {
 
-    private Map<String, List<FieldValueMappingRule>> mappingRules;
+    private final Map<String, List<FieldValueMappingRule>> mappingRules;
 
     public SimpleFieldValueMappingProcessor(List<FieldValueMappingRule> mappingRules) {
-        this.mappingRules = new HashMap<String, List<FieldValueMappingRule>>();
+        this.mappingRules = new HashMap<>();
         for (FieldValueMappingRule fieldValueMappingRule : mappingRules) {
 
             List<FieldValueMappingRule> mappingRuleList;
             if (this.mappingRules.containsKey(fieldValueMappingRule.getFieldName())) {
                 mappingRuleList = this.mappingRules.get(fieldValueMappingRule.getFieldName());
             } else {
-                mappingRuleList = new ArrayList<FieldValueMappingRule>();
+                mappingRuleList = new ArrayList<>();
             }
             mappingRuleList.add(fieldValueMappingRule);
             this.mappingRules.put(fieldValueMappingRule.getFieldName(), mappingRuleList);
         }
     }
 
-    public DataLine process(DataLine dataLine) throws MappingException {
+    public DataLine process(DataLine dataLine) {
         for (DataValue dataValue : dataLine.getValues()) {
             List<FieldValueMappingRule> mappingRuleList = mappingRules.get(dataValue.getName());
             if (null != mappingRuleList && !mappingRuleList.isEmpty()) {
